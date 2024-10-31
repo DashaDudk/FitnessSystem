@@ -1,0 +1,192 @@
+﻿@model FitnessSystem.Models.Gym
+
+@{
+    ViewData["Title"] = "Gym Details";
+
+    <div>
+        <p><strong>Location:</strong> @Model.Location</p>
+    </div>
+    var images = Model.Name switch
+    {
+        "dancing club" => new List<string>
+        {
+            "https://images.pexels.com/photos/6194026/pexels-photo-6194026.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/29143447/pexels-photo-29143447.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://static.wixstatic.com/media/7eff1f_a5f7f19e8fc44f08bb4dea620254d66f~mv2.jpeg/v1/fill/w_568,h_378,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/7eff1f_a5f7f19e8fc44f08bb4dea620254d66f~mv2.jpeg"
+        },
+        "boxing club" => new List<string>
+        {
+            "https://images.pexels.com/photos/2581662/pexels-photo-2581662.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/17279421/pexels-photo-17279421.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/5485621/pexels-photo-5485621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        },
+        "fitness gym" => new List<string>
+        {
+            "https://images.pexels.com/photos/5327487/pexels-photo-5327487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/3112004/pexels-photo-3112004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/7688862/pexels-photo-7688862.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        },
+        _ => new List<string>()
+    };
+
+    var contactInfo = Model.Name switch
+    {
+        "dancing club" => new { Phone = "+38(099)999-99-99", Email = "info@dancingclub.com", Hours = "Mon - Fri, 9:00 AM - 9:00 PM", Location = "Khreshchatyk 11" },
+        "boxing club" => new { Phone = "+38(099)888-88-88", Email = "info@boxclub.com", Hours = "Mon - Sat, 6:00 AM - 10:00 PM", Location = "Vasylkivska 55" },
+        "fitness gym" => new { Phone = "+38(099)555-55-55", Email = "info@fitnessgym.com", Hours = "24/7", Location = "Volodimirska 78" },
+        _ => new { Phone = "N/A", Email = "N/A", Hours = "N/A", Location = "N/A" }
+    };
+
+    string additionalInfo = Model.Name switch
+    {
+        "dancing club" => "Our Dancing Club offers a variety of dance styles, including ballroom, contemporary, and hip-hop. Our experienced trainers are dedicated to helping you master the techniques and improve your physical fitness. Join us for fun and dynamic classes that not only enhance your dance skills but also boost your confidence and coordination.",
+        "boxing club" => "In our Boxing Club, you'll find professional trainers who will teach you the fundamentals of boxing and help you develop your strength and endurance. Whether you're a beginner or an advanced boxer, our personalized training programs are designed to challenge you and push your limits, all while ensuring a supportive and motivating environment.",
+        "fitness gym" => "Our Fitness Gym offers a wide range of equipment and group classes tailored to meet various fitness levels. We have certified trainers who are eager to assist you in reaching your fitness goals, providing guidance on proper techniques and nutrition. Experience a vibrant community that motivates you to stay active and healthy, with facilities open 24/7 to fit your schedule.",
+        _ => "Information about the gym is unavailable."
+    };
+}
+
+<div class="fixed-contact-panel position-fixed p-3 text-dark bg-light" style="top: 20%; right: 0; width: 150px; z-index: 1050; border-radius: 8px 0 0 8px; opacity: 0.9;">
+    <p style="font-size: 0.9rem; font-style: italic;"><strong>Address:</strong> @contactInfo.Location</p>
+    <p style="font-size: 0.9rem; font-style: italic;"><strong>Hours:</strong> @contactInfo.Hours</p>
+    <p style="font-size: 0.9rem; font-style: italic;"><i class="bi bi-telephone"></i> @contactInfo.Phone</p>
+    <p style="font-size: 0.9rem; font-style: italic;"><i class="bi bi-envelope"></i> @contactInfo.Email</p>
+</div>
+
+<div class="container my-5">
+    <div class="text-center">
+        <h1 class="display-4">@Model.Name</h1>
+        <p class="lead">@Model.Location</p>
+    </div>
+
+    <div class="mb-4 text-center" style="font-style: italic;">
+        <p>@additionalInfo</p>
+    </div>
+
+    <div id="gymCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < images.Count; i++)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@images[i]" class="d-block w-100" alt="Image @i" style="max-height: 500px; object-fit: cover;">
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#gymCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#gymCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            @if (Model.Trainers.Any())
+            {
+                <h4>Trainers</h4>
+                <ul class="list-group">
+                    @foreach (var trainer in Model.Trainers)
+                    {
+                        <li class="list-group-item"><strong>@trainer.Name</strong> - @trainer.Specialization</li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <div class="container mt-5">
+            <h3 style="font-weight: bold; font-family: 'Arial', sans-serif; margin-bottom: 30px; text-align: center;">Pricing Information</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 class="text-center">Dance club</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Price (UAH)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Folk dances</td>
+                                <td>600</td>
+                            </tr>
+                            <tr>
+                                <td>Ballroom dancing</td>
+                                <td>800</td>
+                            </tr>
+                            <tr>
+                                <td>Hip-hop</td>
+                                <td>700</td>
+                            </tr>
+                            <tr>
+                                <td>Contemporary</td>
+                                <td>750</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-center">Fitness center</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Price (UAH)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Personal training</td>
+                                <td>900</td>
+                            </tr>
+                            <tr>
+                                <td>Group training sessions</td>
+                                <td>500</td>
+                            </tr>
+                            <tr>
+                                <td>Stretching</td>
+                                <td>400</td>
+                            </tr>
+                            <tr>
+                                <td>CrossFit</td>
+                                <td>750</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-center">Boxing</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Price (UAH)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Boxing basics</td>
+                                <td>700</td>
+                            </tr>
+                            <tr>
+                                <td>Professional training</td>
+                                <td>1000</td>
+                            </tr>
+                            <tr>
+                                <td>Strength training</td>
+                                <td>600</td>
+                            </tr>
+                            <tr>
+                                <td>Training in punching technique</td>
+                                <td>800</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
